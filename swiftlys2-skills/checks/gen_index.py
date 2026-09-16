@@ -26,44 +26,14 @@ SKILL = ROOT / "SKILL.md"
 README = ROOT / "README.md"
 
 CATEGORIES = [
-    {"prefix": "any-", "title": "Any & Unknown Safety", "impact": "CRITICAL",
-     "covers": "Ban any, narrow unknown"},
-    {"prefix": "null-", "title": "Null & Undefined Safety", "impact": "CRITICAL",
-     "covers": "Strict nulls, no !"},
-    {"prefix": "narrow-", "title": "Narrowing & Type Guards", "impact": "CRITICAL",
-     "covers": "Unions, guards, schemas first"},
-    {"prefix": "type-", "title": "Type Design & Domain Modeling", "impact": "HIGH",
-     "covers": "Valid states, brands, derives"},
-    {"prefix": "gen-", "title": "Generics & Inference", "impact": "HIGH",
-     "covers": "Minimal params, conditionals"},
-    {"prefix": "fn-", "title": "Functions & Signatures", "impact": "HIGH",
-     "covers": "Return types, object args"},
-    {"prefix": "err-", "title": "Error Handling", "impact": "HIGH",
-     "covers": "unknown catch, Error-only"},
-    {"prefix": "async-", "title": "Async & Concurrency", "impact": "HIGH",
-     "covers": "No floats, Promise.all"},
-    {"prefix": "coll-", "title": "Objects, Arrays & Collections", "impact": "MEDIUM",
-     "covers": "Indexed access, readonly"},
-    {"prefix": "enum-", "title": "Enums, Literals & Erasable Syntax", "impact": "MEDIUM",
-     "covers": "Erasable code, unions"},
-    {"prefix": "class-", "title": "Classes & OOP", "impact": "MEDIUM",
-     "covers": "#private, no getters"},
-    {"prefix": "mod-", "title": "Modules & Declarations", "impact": "MEDIUM",
-     "covers": "import type, export types"},
-    {"prefix": "cfg-", "title": "Config & Compiler (TS 7)", "impact": "MEDIUM",
-     "covers": "strict, erasable, TS7 split"},
-    {"prefix": "perf-", "title": "Performance (types + build)", "impact": "MEDIUM",
-     "covers": "Emit speed, parallel flags"},
-    {"prefix": "test-", "title": "Testing (types)", "impact": "MEDIUM",
-     "covers": "expectTypeOf"},
-    {"prefix": "doc-", "title": "Documentation (TSDoc)", "impact": "MEDIUM",
-     "covers": "Intent over types"},
-    {"prefix": "lint-", "title": "Linting & Tooling", "impact": "LOW",
-     "covers": "Lint/TS version split"},
-    {"prefix": "proj-", "title": "Project Structure", "impact": "LOW",
-     "covers": "devDeps, rootDir"},
-    {"prefix": "anti-", "title": "Anti-patterns", "impact": "REFERENCE",
-     "covers": "Fix-ups index"},
+    {"prefix": "playbook-", "title": "Playbooks", "impact": "HIGH",
+     "covers": "Architecture, lifecycle, perf"},
+    {"prefix": "workflow-", "title": "Workflows", "impact": "HIGH",
+     "covers": "Plan, audit, edit"},
+    {"prefix": "kb-", "title": "Knowledge Index", "impact": "MEDIUM",
+     "covers": "Docs map, assets, surface"},
+    {"prefix": "hud-", "title": "Custom HUD", "impact": "MEDIUM",
+     "covers": "Layout, dialog, input"},
 ]
 
 
@@ -86,10 +56,10 @@ def summaries() -> dict[str, str]:
 
 def grouped(by_summary: dict[str, str]) -> dict[str, list[str]]:
     """Bucket rule ids per category prefix, preserving SKILL.md order."""
-    known = {c["prefix"] for c in CATEGORIES}
-    stray = sorted({rid.split("-")[0] + "-" for rid in by_summary} - known)
-    if stray:
-        fail(f"unknown prefix (add to CATEGORIES): {stray}")
+    unmatched = [rid for rid in by_summary
+                 if not any(rid.startswith(c["prefix"]) for c in CATEGORIES)]
+    if unmatched:
+        fail(f"unknown prefix (add to CATEGORIES): {sorted(unmatched)}")
 
     current = re.findall(r"rules/([a-z0-9-]+)\.md", SKILL.read_text(encoding="utf-8"))
     seen = set()
@@ -115,11 +85,15 @@ def region(text: str, name: str) -> tuple[str, str, str]:
     return m.group(1), m.group(2), m.group(3)
 
 
+def short_prefix(prefix: str) -> str:
+    return f"`{prefix}`"
+
+
 def build_table(groups: dict[str, list[str]]) -> str:
     head = "| Priority | Category | Impact | Prefix | Rules |"
     sep = "|----------|----------|--------|--------|-------|"
     rows = [
-        f"| {i} | {c['title']} | {c['impact']} | `{c['prefix']}` | {len(groups[c['prefix']])} |"
+        f"| {i} | {c['title']} | {c['impact']} | {short_prefix(c['prefix'])} | {len(groups[c['prefix']])} |"
         for i, c in enumerate(CATEGORIES, 1)
     ]
     return head + "\n" + sep + "\n" + "\n".join(rows)
@@ -139,9 +113,9 @@ def build_badges(total: int, ncat: int) -> str:
     base = "https://img.shields.io/badge"
     flat = "style=flat-square"
     return "\n".join([
-        f"![rules]({base}/rules-{total}-3178C6?{flat}&logo=typescript&logoColor=white)",
-        f"![categories]({base}/categories-{ncat}-89b4fa?{flat}&logo=typescript&logoColor=white)",
-        f"![TypeScript]({base}/TypeScript-strict-3178C6?{flat}&logo=typescript&logoColor=white)",
+        f"![rules]({base}/rules-{total}-E8930C?{flat}&logo=counterstrike&logoColor=white)",
+        f"![categories]({base}/categories-{ncat}-89b4fa?{flat}&logo=counterstrike&logoColor=white)",
+        f"![SwiftlyS2]({base}/SwiftlyS2-CS2-E8930C?{flat}&logo=counterstrike&logoColor=white)",
         "![ci](https://github.com/Mvkweb/skills/actions/workflows/ci.yml/badge.svg)",
         f"![PRs]({base}/PRs-welcome-brightgreen?{flat})",
         f"![license]({base}/license-MIT-green?{flat})",

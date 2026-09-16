@@ -1,27 +1,53 @@
-# TypeScript Skills
+# Agent Skills
 
 <!-- gen:begin:badges -->
 ![rules](https://img.shields.io/badge/rules-63-3178C6?style=flat-square&logo=typescript&logoColor=white)
 ![categories](https://img.shields.io/badge/categories-19-89b4fa?style=flat-square&logo=typescript&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript&logoColor=white)
-![ci](https://github.com/Mvkweb/typescript-skills/actions/workflows/ci.yml/badge.svg)
+![ci](https://github.com/Mvkweb/skills/actions/workflows/ci.yml/badge.svg)
 ![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)
 ![license](https://img.shields.io/badge/license-MIT-green?style=flat-square)
 <!-- gen:end:badges -->
 
-By default, agents write decent TypeScript at best. These 63 rules pull that up to careful.
+Agents writes good code nowadays but doesn't follow how i usually want. This repo holds patterns against exactly that. Each skill is small rules with a reason, a bad example, a good example, and links onward. The agent reads the index, opens the rules that fit the code, and follows them.
 
-## Why
+<!-- gen:begin:total -->
+85 rules across 3 skills. Each skill has its own index: open its `SKILL.md`.
+<!-- gen:end:total -->
 
-LLMs write TypeScript that compiles and breaks later. `any` instead of a type. `!` instead of a check. This skill is 63 small rules against exactly that. The agent reads the index, opens the rules that fit the code, and follows them.
+## Skills in this repo
+
+<!-- gen:begin:skills -->
+| Skill | Rules | Categories | What it covers |
+|-------|-------|------------|----------------|
+| [typescript-skills](./SKILL.md) | 63 | 19 | Strict TypeScript, TS 7-ready |
+| [csharp-skills](./csharp-skills/SKILL.md) | 12 | 6 | Nullable C#, builds, tests |
+| [swiftlys2-skills](./swiftlys2-skills/SKILL.md) | 10 | 4 | CS2 server plugins (game APIs) |
+<!-- gen:end:skills -->
+
+- **typescript-skills** (this root). Strict TypeScript that stays type-safe at scale. The backbone for anything `.ts/.tsx`. Full table below.
+- **[csharp-skills](./csharp-skills/README.md)**. Nullable C#, safe refactoring, cooperative cancellation, build hygiene with binlogs, test discipline. No game APIs.
+- **[swiftlys2-skills](./swiftlys2-skills/README.md)**. CS2 server plugin rules: lifecycle closure, main-thread boundaries, `IPlayer`/`SessionId` handling, tick budgets, plan/audit/edit workflows. Game APIs only, pure C# lives in `csharp-skills`.
 
 ## Install
 
+A `SKILL.md` at the repo root shadows nested skills, so install each by path:
+
 ```bash
-npx add-skill Mvkweb/typescript-skills
+npx skills add Mvkweb/skills                    # typescript-skills (repo root)
+npx skills add Mvkweb/skills/csharp-skills      # csharp-skills
+npx skills add Mvkweb/skills/swiftlys2-skills   # swiftlys2-skills
 ```
 
-Or clone it into your agent's skills dir. Then: `/typescript-skills review this function`.
+Scope and targets:
+
+```bash
+npx skills add Mvkweb/skills/csharp-skills -a opencode   # into the project in your current directory
+npx skills add Mvkweb/skills/csharp-skills -g -a opencode # global, available in every project
+npx skills list                                          # verify what landed where
+```
+
+Project installs land in `./.agents/skills/<name>/`. Global installs land in the agent native dir (`~/.config/opencode/skills/` for OpenCode). OpenCode reads `.opencode/skills`, `.agents/skills`, and `.claude/skills`, so no extra config is needed either way.
 
 ## Example
 
@@ -39,7 +65,7 @@ function firstWord(s: string): string | undefined {
 }
 ```
 
-## What's in here
+## TypeScript skill contents
 
 <!-- gen:begin:categories -->
 63 rules split into 19 categories:
@@ -67,30 +93,43 @@ function firstWord(s: string): string | undefined {
 | **Anti-patterns** | 6 | Fix-ups index |
 <!-- gen:end:categories -->
 
-Every rule has a reason, a bad example, a good example, and links onward.
+Every rule has a reason, a bad example, a good example, and links onward. Full rule list with links: [SKILL.md](./SKILL.md).
 
 ## How it works
 
-[`SKILL.md`](./SKILL.md) is the index. [`rules/`](./rules) holds one file per rule. Prefixes match categories. That is the whole design.
+Each skill is one index (`SKILL.md`) plus one file per rule (`rules/`). Prefixes match categories. That is the whole design. Rule files are the source of truth. Everything tabular in these READMEs regenerates from them, and CI fails if the index is stale.
 
 ## Manual install
 
 ```bash
-git clone https://github.com/Mvkweb/typescript-skills.git <agent-skills-dir>/typescript-skills
+git clone https://github.com/Mvkweb/skills.git <agent-skills-dir>/typescript-skills
 ```
 
-Targets per agent:
+For `csharp-skills` or `swiftlys2-skills`, clone the repo and copy that subdir into your agent skills dir. Targets per agent:
 
-- Claude Code (global): `~/.claude/skills/typescript-skills`
-- Claude Code (one project): `.claude/skills/typescript-skills`
-- OpenCode: `.opencode/skills/typescript-skills`
-- Cursor: `.cursor/skills/typescript-skills`, or single file via `curl -o .cursorrules https://raw.githubusercontent.com/Mvkweb/typescript-skills/main/SKILL.md`
-- Codex: `.codex/skills/typescript-skills`
-- Copilot: `curl -o .github/copilot-instructions.md https://raw.githubusercontent.com/Mvkweb/typescript-skills/main/SKILL.md`
-- Any AGENTS.md agent: `curl -o AGENTS.md https://raw.githubusercontent.com/Mvkweb/typescript-skills/main/SKILL.md`
+- Claude Code (global): `~/.claude/skills/<skill-name>`
+- Claude Code (one project): `.claude/skills/<skill-name>`
+- OpenCode: `.opencode/skills/<skill-name>`
+- Cursor: `.cursor/skills/<skill-name>`, or single file via `curl -o .cursorrules https://raw.githubusercontent.com/Mvkweb/skills/main/SKILL.md`
+- Codex: `.codex/skills/<skill-name>`
+- Copilot: `curl -o .github/copilot-instructions.md https://raw.githubusercontent.com/Mvkweb/skills/main/SKILL.md`
+- Any AGENTS.md agent: `curl -o AGENTS.md https://raw.githubusercontent.com/Mvkweb/skills/main/SKILL.md`
 
-Full rule list with links: [SKILL.md](./SKILL.md).
+Then: `/typescript-skills review this function`.
+
+## Contributing
+
+Small focused changes. Every rule traces to a fetched human source or to upstream instruction text (provenance in `<!-- source: -->`).
+
+```bash
+# 1. write <skill>/rules/<prefix>-<name>.md  (# id, > summary, Why / Bad / Good / See Also)
+python3 <skill>/checks/gen_index.py --write  # 2. refresh that skill index
+bash <skill>/checks/check.sh                 # 3. keep it green, baseline empty
+python3 eng/gen_root.py --write              # 4. refresh this front page
+```
+
+Never hand-edit inside `<!-- gen:begin -->` markers.
 
 ## Sources
 
-Vanderkam's Effective TypeScript, Pocock's Total TypeScript tips, Goldberg's Learning TypeScript, Microsoft's Handbook, Cursor's pstack modeling rules. Synthesized, not copied. MIT.
+TypeScript skill: Vanderkam's Effective TypeScript, Pocock's Total TypeScript tips, Goldberg's Learning TypeScript, Microsoft's Handbook, Cursor's pstack modeling rules. C# skill: verbatim excerpts from dotnet/skills (MIT). SwiftlyS2 skill: official SwiftlyS2 docs, sw2-mdwiki, official repository. Synthesized and reorganized, not copied where it matters. Upstream materials remain under their own licenses. Original text is MIT.

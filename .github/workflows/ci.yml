@@ -33,3 +33,47 @@ jobs:
       # Same command contributors run locally.
       - name: Run checks
         run: bash checks/check.sh
+
+  csharp:
+    name: csharp-skills checks + dotnet gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.x"
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "8.0.x"
+      # Same command contributors run locally.
+      - name: Run csharp checks
+        run: bash csharp-skills/checks/check.sh
+
+  swiftlys2:
+    name: swiftlys2-skills checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.x"
+      # Same command contributors run locally.
+      - name: Run swiftlys2 checks
+        run: bash swiftlys2-skills/checks/check.sh
+
+  root-index:
+    name: Root README matches all skills
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.x"
+      - name: typescript index matches rules/
+        run: python3 checks/gen_index.py
+      - name: csharp index matches rules/
+        run: python3 csharp-skills/checks/gen_index.py
+      - name: swiftlys2 index matches rules/
+        run: python3 swiftlys2-skills/checks/gen_index.py
+      - name: Root index matches all skills/
+        run: python3 eng/gen_root.py

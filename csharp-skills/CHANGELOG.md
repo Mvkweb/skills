@@ -7,11 +7,13 @@ for the rule set.
 ## [0.1.0]
 
 ### Added
-- Initial release: 63 rules across 19 categories, from `any-` safety through
-  the `anti-` fix-ups index.
+- Initial release: 12 rules across 6 categories, from `null-` safety through
+  the `test-` seams index.
+- Rule bodies verbatim from dotnet/skills (provenance markers), reshaped to
+  one-index-plus-rules format.
 - `checks/` harness: structure validation, index generation with `--check`
-  mode, Good-example compile gate with empty baseline, one-command
-  `check.sh`, CI workflow with separate validate and examples jobs.
+  mode, dotnet compile gate (smoke + opt-in snippets), one-command
+  `check.sh`, CI matrix job.
 - README, MIT LICENSE, this changelog.
 
 [0.1.0]: https://github.com/Mvkweb/skills
